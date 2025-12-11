@@ -1,0 +1,13 @@
+# VS Code
+.vscode/
+
+# Environments
+.pixi/
+.env
+
+# Python-generated files
+__pycache__/
+
+# SQLite-specific files
+*.db
+*.csv
