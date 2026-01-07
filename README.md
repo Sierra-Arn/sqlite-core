@@ -10,7 +10,7 @@ sqlite-core/
 ├── .env.example           # Example environment variables file
 ├── pixi.lock              # Locked dependency versions for reproducible environments
 ├── pixi.toml              # Pixi project configuration: environments, dependencies, 
-|                          # platforms and project-specific commands
+│                          # platforms and project-specific commands
 └── playground-testing/    # Jupyter notebooks for playground testing
 ```
 
