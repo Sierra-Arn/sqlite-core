@@ -18,28 +18,28 @@ Each directory includes its own `README.md` with detailed information about its 
 
 ## **Dependencies Overview**
 
-- [pydantic-settings](https://github.com/pydantic/pydantic-settings) —  
-A Pydantic-powered library for managing application configuration and environment variables with strong typing, validation, and seamless `.env` support.
+- [pydantic-settings](https://github.com/pydantic/pydantic-settings) — 
+a Pydantic-powered library for managing application configuration and environment variables with strong typing, validation, and seamless `.env` support.
 
-- [SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) —  
-The Python SQL toolkit and Object-Relational Mapper (ORM) used as the foundation for database modeling, querying, and transaction management in both synchronous and asynchronous contexts.
+- [SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) — 
+the Python SQL toolkit and Object-Relational Mapper (ORM) used as the foundation for database modeling, querying, and transaction management in both synchronous and asynchronous contexts.
 
-- [Alembic](https://github.com/sqlalchemy/alembic) —  
-A lightweight database migration tool for SQLAlchemy, enabling structured, version-controlled evolution of the SQLite schema over time.
+- [Alembic](https://github.com/sqlalchemy/alembic) — 
+a lightweight database migration tool for SQLAlchemy, enabling structured, version-controlled evolution of the SQLite schema over time.
 
-- **`sqlite3`** —  
-Python’s built-in module for working with SQLite databases — no extra installation required.
+- **`sqlite3`** — 
+python’s built-in module for working with SQLite databases — no extra installation required.
 
-- [aiosqlite](https://github.com/omnilib/aiosqlite) —  
-An asynchronous wrapper around Python’s built-in `sqlite3` module, enabling non-blocking SQLite database operations.
+- [aiosqlite](https://github.com/omnilib/aiosqlite) — 
+an asynchronous wrapper around Python’s built-in `sqlite3` module, enabling non-blocking SQLite database operations.
 
 ### **Testing & Development Dependencies**
 
-- [ipykernel](https://github.com/ipython/ipykernel) —  
-The IPython kernel for Jupyter, enabling interactive notebook development and seamless integration with the project’s virtual environments.
+- [ipykernel](https://github.com/ipython/ipykernel) — 
+the IPython kernel for Jupyter, enabling interactive notebook development and seamless integration with the project’s virtual environments.
 
-- [sqlite](https://github.com/mackyle/sqlite) —  
-The unofficial SQLite engine. While Python’s built-in `sqlite3` module handles all runtime database operations (which is why the SQLite engine is listed under "Testing & Development"), it lacks a very important feature for testing (at least for me): the ability to connect to the database via a command-line interface and inspect or query data using SQL-like commands. That’s why I install the full, unofficial SQLite engine — it includes a CLI tool that allows me to directly inspect, query, and manipulate the SQLite database file from the terminal — for example, to verify the schema structure or examine raw data.
+- [sqlite](https://github.com/mackyle/sqlite) — 
+the official SQLite engine. While Python’s built-in `sqlite3` module handles all runtime database operations (which is why the SQLite engine is listed under "Testing & Development"), it lacks a very important feature for testing (at least for me): the ability to connect to the database via a command-line interface and inspect or query data using SQL-like commands. That’s why I install the full SQLite engine — it includes a CLI tool that allows me to directly inspect, query, and manipulate the SQLite database file from the terminal — for example, to verify the schema structure or examine raw data.
 
 ## **Quick Start**
 
