@@ -72,15 +72,3 @@ class MLMetric(Base):
     ml_model: Mapped["MLModel"] = relationship(
         back_populates = "ml_metrics"
     )
-
-    def __repr__(self) -> str:
-        """
-        Return a developer-friendly string representation of the ML metric instance.
-
-        Returns
-        -------
-        str
-            Concise, unambiguous representation suitable for logs, REPL, and test assertions.
-        """
-        
-        return f"<MLMetric(id={self.id}, ml_model_id={self.ml_model_id}, name={self.name!r}, value={self.value})>"

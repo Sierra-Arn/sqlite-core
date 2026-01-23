@@ -1,4 +1,5 @@
 # app/db/schemas/ml_model.py
+from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field
 from ..models import DeviceType
 
@@ -73,6 +74,59 @@ class MLModelRequestUpdate(BaseModel):
                 },
                 {
                     "device": "CPU"
+                }
+            ]
+        }
+    )
+
+
+class MLModelResponse(BaseModel):
+    """
+    Response schema representing a fully hydrated machine learning model entity.
+
+    This schema is used to serialize an `MLModel` ORM instance for API responses.
+    It includes both user-provided fields and system-managed metadata.
+    """
+
+    id: int = Field(
+        ...,
+        description="Unique surrogate identifier assigned by the database."
+    )
+
+    name: str = Field(
+        ...,
+        min_length=1,
+        max_length=32,
+        description="Unique business identifier for the ML model."
+    )
+
+    device: DeviceType = Field(
+        ...,
+        description="Target inference device where the model is expected to run (`CPU` or `CUDA`)."
+    )
+
+    created_at: datetime = Field(
+        ...,
+        description="Timestamp when the model record was first created in the database."
+    )
+
+    updated_at: datetime = Field(
+        ...,
+        description="Timestamp when the model record was last modified."
+    )
+
+    model_config = ConfigDict(
+        # Key setting for working with ORM objects
+        from_attributes=True,
+        extra="forbid",
+        json_schema_extra={
+            "examples": [
+                {
+                    "id": 1,
+                    "name": "sapiens_pose",
+                    "device": "CUDA",
+                    "created_at": "2026-01-23T10:00:00Z",
+                    "updated_at": "2026-01-23T10:00:00Z"
                 }
             ]
         }

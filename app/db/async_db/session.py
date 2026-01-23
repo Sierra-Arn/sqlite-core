@@ -8,6 +8,9 @@ from ..config import sqlite_config
 engine = create_async_engine(
     sqlite_config.async_connection_url,
     echo=sqlite_config.echo,
+    
+    # Enables SQLAlchemy 2.0-style API semantics, ensuring forward compatibility
+    # and consistent behavior across future versions.
     future=True
 )
 """
@@ -15,16 +18,6 @@ Asynchronous SQLAlchemy database engine configured via application settings.
 
 This engine provides the foundational connection interface for all asynchronous
 ORM operations against the SQLite database.
-
-Parameters
-----------
-url : str
-    The SQLite connection URL.
-echo : bool
-    Controls whether all executed SQL statements are printed to stdout.
-future : bool
-    Enables SQLAlchemy 2.0-style API semantics, ensuring forward compatibility
-    and consistent behavior across future versions.
 """
 
 AsyncSessionLocal = async_sessionmaker(
@@ -32,31 +25,13 @@ AsyncSessionLocal = async_sessionmaker(
     autoflush=sqlite_config.autoflush,
     bind=engine,
     class_=AsyncSession,
+    expire_on_commit=sqlite_config.expire_on_commit
 )
 """
 Asynchronous session factory configured according to application-wide database behavior policies.
 
 Creates new SQLAlchemy `AsyncSession` instances whose transactional and flushing semantics
 are dictated by the `SQLiteConfig` settings.
-
-Parameters
-----------
-autocommit : bool
-    If `True`, each operation is automatically committed.  
-    **Not recommended** for production.
-autoflush : bool
-    If `True`, pending changes are automatically synchronized to the database before queries.  
-    Disabling (`False`) gives explicit control.
-bind : AsyncEngine
-    The SQLAlchemy asynchronous engine to use for database connections.
-class_ : type
-    Specifies the session class to instantiate; here, `AsyncSession` for asynchronous operations.
-
-Notes
------
-With `autocommit=False` and `autoflush=False`, the developer has full control over:
-    - When pending changes become visible via `await session.flush()`.
-    - When changes are permanently persisted via `await session.commit()`.
 """
 
 @asynccontextmanager

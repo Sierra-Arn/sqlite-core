@@ -3,10 +3,12 @@ from typing import Type
 from .base import BaseService
 from ..repositories import MLModelRepository
 from ...models import MLModel
-from ...schemas import MLModelRequestCreate, MLModelRequestUpdate
+from ...schemas import MLModelRequestCreate, MLModelRequestUpdate, MLModelResponse
 
 
-class MLModelService(BaseService[MLModel, MLModelRequestCreate, MLModelRequestUpdate, MLModelRepository]):
+class MLModelService(
+    BaseService[MLModel, MLModelRequestCreate, MLModelRequestUpdate, MLModelResponse, MLModelRepository]
+):
     """
     Business service for managing `MLModel` entities with strict enforcement of domain invariants.
 
@@ -14,17 +16,31 @@ class MLModelService(BaseService[MLModel, MLModelRequestCreate, MLModelRequestUp
         - Model names are globally unique (immutable business identifiers),
         - No two models can share the same name, even across different devices,
         - Creation attempts with duplicate names are rejected early with a clear error.
-
-    Attributes
-    ----------
-    repository_class : Type[MLModelRepository]
-        Returns the repository responsible for `MLModel` data access.
     """
 
     @property
     def repository_class(self) -> Type[MLModelRepository]:
-        """Return the repository class used for ML model data operations."""
+        """
+        Return the repository class responsible for `MLModel` data access.
+
+        Returns
+        -------
+        Type[MLModelRepository]
+            The repository class bound to this service.
+        """
         return MLModelRepository
+
+    @property
+    def read_schema_class(self) -> Type[MLModelResponse]:
+        """
+        Return the Pydantic schema class for serializing `MLModel` entities.
+
+        Returns
+        -------
+        Type[MLModelResponse]
+            The schema class used for read operations.
+        """
+        return MLModelResponse
 
     def _validate_create(self, obj_data: MLModelRequestCreate, repository: MLModelRepository) -> None:
         """

@@ -60,15 +60,3 @@ class MLModel(Base):
         back_populates = "ml_model",
         cascade = "all, delete-orphan"
     )
-
-    def __repr__(self) -> str:
-        """
-        Return a developer-friendly string representation of the ML model instance.
-
-        Returns
-        -------
-        str
-            Concise, unambiguous representation suitable for logs, REPL, and test assertions.
-        """
-        
-        return f"<MLModel(id={self.id}, name={self.name!r}, device={self.device})>"

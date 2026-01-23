@@ -3,10 +3,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from .base import BaseRepository
 from ...models import MLMetric
-from ...schemas import MLMetricRequestCreate, MLMetricRequestUpdate
 
 
-class MLMetricRepository(BaseRepository[MLMetric, MLMetricRequestCreate, MLMetricRequestUpdate]):
+class MLMetricRepository(BaseRepository[MLMetric]):
     """
     Concrete repository for managing `MLMetric` entity in the database.
     This class extends the generic `BaseRepository` with model-specific functionality.
@@ -30,7 +29,7 @@ class MLMetricRepository(BaseRepository[MLMetric, MLMetricRequestCreate, MLMetri
             Typically injected via a dependency (e.g., FastAPI) or context manager.
         """
 
-        super().__init__(db, MLMetric)
+        super().__init__(db = db, model = MLMetric)
 
     def get_by_model_id_and_name(self, model_id: int, metric_name: str) -> MLMetric | None:
         """

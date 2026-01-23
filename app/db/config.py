@@ -9,20 +9,36 @@ class SQLiteConfig(BaseSettings):
     Attributes
     ----------
     db_path : str, optional
-        Absolute path to the SQLite database file.
+        Path to the SQLite database file.
     echo : bool, optional
         Enables or disables SQL statement logging to stdout.
         Useful for debugging during development; should be `False` in production.
         Default is `False`.
     autocommit : bool, optional
         Controls whether SQLAlchemy sessions automatically commit transactions.
-        When `False` (recommended), explicit `commit()` calls are required.
+        When `False`, explicit `commit()` calls are required.
         Default is `False`.
     autoflush : bool, optional
         Controls whether pending ORM changes are automatically flushed before queries.
-        When `False` (recommended), flushing is manual, giving full control over side effects.
+        When `False`, flushing is manual, giving full control over side effects.
         Default is `False`.
-    
+    expire_on_commit : bool, optional
+        Determines whether ORM objects are expired (i.e., their attributes detached from the session)
+        immediately after a transaction is committed.
+        
+        When `True` (SQLAlchemy's default), all loaded attributes of ORM instances are marked as "expired"
+        upon `session.commit()`. Any subsequent access to these attributes triggers an implicit
+        database refresh (lazy load) to ensure data consistency. While safe in synchronous contexts,
+        this behavior is **incompatible with asynchronous applications** when serializing ORM objects
+        after commit: Pydantic's `model_validate()` is a purely synchronous function and cannot
+        perform the required `await`-based I/O to reload expired attributes. This results in a
+        `MissingGreenlet` error during attribute access.
+        
+        Therefore, in async applications, this setting **must be `False`** to preserve attribute values post-commit and 
+        allow safe serialization of ORM objects into Pydantic response models.
+        
+        Default is `False`.
+
     Notes:
     ------
     1. Automatically loads settings from a `.env` file in the current working directory
@@ -35,9 +51,9 @@ class SQLiteConfig(BaseSettings):
        (from highest to lowest priority):
         1. **Explicitly passed arguments** — values provided directly to the constructor.
         2. **Environment variables** — including those loaded from the `.env` file,
-           prefixed according to the subclass's `env_prefix`.
+        prefixed according to the subclass's `env_prefix`.
         3. **Code-defined defaults** — fallback values specified as field defaults
-           in the class definition.
+        in the class definition.
     """
 
     model_config = SettingsConfigDict(
@@ -53,6 +69,7 @@ class SQLiteConfig(BaseSettings):
     echo: bool = False
     autocommit: bool = False
     autoflush: bool = False
+    expire_on_commit: bool = False
 
     @property
     def sync_connection_url(self) -> str:

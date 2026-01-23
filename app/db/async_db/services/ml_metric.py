@@ -1,30 +1,46 @@
 # app/db/async_db/services/ml_metric.py
 from typing import Type
-from ...models import MLMetric
-from ...schemas import MLMetricRequestCreate, MLMetricRequestUpdate
-from ..repositories import MLMetricRepository, MLModelRepository
 from .base import BaseService
+from ...models import MLMetric
+from ...schemas import MLMetricRequestCreate, MLMetricRequestUpdate, MLMetricResponse
+from ..repositories import MLMetricRepository, MLModelRepository
 
 
-class MLMetricService(BaseService[MLMetric, MLMetricRequestCreate, MLMetricRequestUpdate, MLMetricRepository]):
+class MLMetricService(
+    BaseService[MLMetric, MLMetricRequestCreate, MLMetricRequestUpdate, MLMetricResponse, MLMetricRepository]
+):
     """
-    Business service for managing `MLMetric` entities with referential integrity enforcement.
+    Business service for managing `MLMetric` entities with referential integrity enforcement (async version).
 
     This service ensures that:
         - Every metric is associated with an existing `MLModel`,
         - The composite identity `(ml_model_id, name)` remains consistent with the database constraint,
         - Orphaned or dangling metrics cannot be created.
-
-    Attributes
-    ----------
-    repository_class : Type[MLMetricRepository]
-        Returns the repository responsible for `MLMetric` data access.
     """
 
     @property
     def repository_class(self) -> Type[MLMetricRepository]:
-        """Return the repository class used for ML metric data operations."""
+        """
+        Return the repository class responsible for `MLMetric` data access.
+
+        Returns
+        -------
+        Type[MLMetricRepository]
+            The repository class bound to this service.
+        """
         return MLMetricRepository
+
+    @property
+    def read_schema_class(self) -> Type[MLMetricResponse]:
+        """
+        Return the Pydantic schema class for serializing `MLMetric` entities.
+
+        Returns
+        -------
+        Type[MLMetricResponse]
+            The schema class used for read operations.
+        """
+        return MLMetricResponse
 
     async def _validate_create(self, obj_data: MLMetricRequestCreate, repository: MLMetricRepository) -> None:
         """

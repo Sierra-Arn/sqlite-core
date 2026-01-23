@@ -3,10 +3,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from .base import BaseRepository
 from ...models import MLModel
-from ...schemas import MLModelRequestCreate, MLModelRequestUpdate
 
 
-class MLModelRepository(BaseRepository[MLModel, MLModelRequestCreate, MLModelRequestUpdate]):
+class MLModelRepository(BaseRepository[MLModel]):
     """
     Concrete repository for managing `MLModel` entity in the database. 
     This class extends the generic `BaseRepository` with model-specific functionality.
@@ -30,7 +29,7 @@ class MLModelRepository(BaseRepository[MLModel, MLModelRequestCreate, MLModelReq
             Typically injected via a dependency (e.g., FastAPI) or context manager.
         """
         
-        super().__init__(db, MLModel)
+        super().__init__(db = db, model = MLModel)
 
     def get_by_name(self, name: str) -> MLModel | None:
         """

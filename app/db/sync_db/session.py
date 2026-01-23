@@ -9,6 +9,9 @@ from ..config import sqlite_config
 engine = create_engine(
     sqlite_config.sync_connection_url,
     echo=sqlite_config.echo,
+    
+    # Enables SQLAlchemy 2.0-style API semantics, ensuring forward compatibility
+    # and consistent behavior across future versions.
     future=True
 )
 """
@@ -16,21 +19,12 @@ Synchronous SQLAlchemy database engine configured via application settings.
 
 This engine provides the foundational connection interface for all synchronous
 ORM operations against the SQLite database.
-
-Parameters
-----------
-url : str
-    The SQLite connection URL.
-echo : bool
-    Controls whether all executed SQL statements are printed to stdout.
-future : bool
-    Enables SQLAlchemy 2.0-style API semantics, ensuring forward compatibility
-    and consistent behavior across future versions.
 """
 
 SessionLocal = sessionmaker(
     autocommit=sqlite_config.autocommit,
     autoflush=sqlite_config.autoflush,
+    expire_on_commit=sqlite_config.expire_on_commit,
     bind=engine,
 )
 """
@@ -38,23 +32,6 @@ Session factory configured according to application-wide database behavior polic
 
 Creates new SQLAlchemy `Session` instances whose transactional and flushing semantics
 are dictated by the `SQLiteConfig` settings.
-
-Parameters
-----------
-autocommit : bool
-    If `True`, each operation is automatically committed.  
-    **Not recommended** for production.
-autoflush : bool
-    If `True`, pending changes are automatically synchronized to the database before queries.  
-    Disabling (`False`) gives explicit control.
-bind : Engine
-    The SQLAlchemy engine to use for database connections.
-
-Notes
------
-With `autocommit=False` and `autoflush=False`, the developer has full control over:
-    - When pending changes become visible via `session.flush()`.
-    - When changes are permanently persisted via `session.commit()`.
 """
 
 @contextmanager

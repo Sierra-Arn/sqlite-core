@@ -3,12 +3,11 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from .base import BaseRepository
 from ...models import MLModel
-from ...schemas import MLModelRequestCreate, MLModelRequestUpdate
 
 
-class MLModelRepository(BaseRepository[MLModel, MLModelRequestCreate, MLModelRequestUpdate]):
+class MLModelRepository(BaseRepository[MLModel]):
     """
-    Concrete repository for managing `MLModel` entity in the database. 
+    Concrete repository for managing `MLModel` entity in the database (async version).
     This class extends the generic `BaseRepository` with model-specific functionality.
 
     Attributes
@@ -27,10 +26,9 @@ class MLModelRepository(BaseRepository[MLModel, MLModelRequestCreate, MLModelReq
         ----------
         db : AsyncSession
             Active SQLAlchemy asynchronous session providing transactional context.
-            Typically injected via a dependency (e.g., FastAPI) or async context manager.
         """
         
-        super().__init__(db, MLModel)
+        super().__init__(db=db, model=MLModel)
 
     async def get_by_name(self, name: str) -> MLModel | None:
         """
@@ -46,11 +44,6 @@ class MLModelRepository(BaseRepository[MLModel, MLModelRequestCreate, MLModelReq
         -------
         MLModel or None
             The model instance if found; `None` if no model with the given name exists.
-
-        Notes
-        -----
-        Unlike `get(id)`, this method is not used for updates or deletions via primary key,
-        but is essential for registration validation (e.g., ensuring no duplicate names on create).
         """
         
         stmt = select(MLModel).where(MLModel.name == name)
