@@ -35,8 +35,8 @@ an asynchronous wrapper around Python’s built-in `sqlite3` module, enabling no
 
 ### **Testing & Development Dependencies**
 
-- [ipykernel](https://github.com/ipython/ipykernel) — 
-the IPython kernel for Jupyter, enabling interactive notebook development and seamless integration with the project’s virtual environments.
+- [JupyterLab](https://github.com/jupyterlab/jupyterlab) — 
+a next-generation web-based interactive development environment for Jupyter notebooks; used here to create interactive documents for testing and verifying code execution.
 
 - [sqlite](https://github.com/mackyle/sqlite) — 
 the official SQLite engine. While Python’s built-in `sqlite3` module handles all runtime database operations (which is why the SQLite engine is listed under "Testing & Development"), it lacks a very important feature for testing (at least for me): the ability to connect to the database via a command-line interface and inspect or query data using SQL-like commands. That’s why I install the full SQLite engine — it includes a CLI tool that allows me to directly inspect, query, and manipulate the SQLite database file from the terminal — for example, to verify the schema structure or examine raw data.
@@ -81,11 +81,29 @@ the official SQLite engine. While Python’s built-in `sqlite3` module handles a
 
 ### **III. Testing**
 
-Once a database is ready, you can run and test the SQLite implementation with interactive Jupyter notebooks in `playground-testing/`. Additionally, you can open a SQLite shell to manually verify that everything is working correctly:
+Once a database is ready, you can run and test the SQLite implementation with interactive Jupyter notebooks in `playground-testing/`:
 
-```bash
-pixi run sqlite-shell
-```
+1. **Launch JupyterLab**
+
+    ```bash
+    pixi run -e test jupyter lab
+    ```
+
+2. **Test the SQLite implementation**
+    - JupyterLab should open automatically in your browser at the default address.
+    - In JupyterLab, navigate to the `playground-testing/` folder.
+    - Open and execute the notebooks interactively.
+
+3. **(Optional) Verify database manually**  
+You can open a SQLite shell to manually verify that everything is working correctly:
+
+    ```bash
+    pixi run sqlite-shell
+    ```
+
+### **IV. Cleanup**
+
+When you finish testing, stop JupyterLab by pressing `Ctrl+C` in the terminal where it's running.
 
 ## **License**
 

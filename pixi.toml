@@ -3,7 +3,7 @@ authors = ["Sierra Arn"]
 channels = ["conda-forge"]
 name = "sqlite-core"
 platforms = ["linux-64"]
-version = "0.2.0"
+version = "0.2.1"
 
 # Create a local environment configuration file by copying .env.example to .env
 # After copying, edit .env file to set your specific configuration values
@@ -51,7 +51,7 @@ alembic = "*"
 aiosqlite = "*"
 
 [feature.test.dependencies]
-ipykernel = "*"
+jupyterlab = "*"
 sqlite = "*"
 
 [environments]

@@ -11,3 +11,6 @@ __pycache__/
 # SQLite-specific files
 *.db
 *.csv
+
+# Jupyter-generated files
+.ipynb_checkpoints/
