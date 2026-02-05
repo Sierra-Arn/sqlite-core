@@ -57,7 +57,7 @@ the official SQLite engine. While Python’s built-in `sqlite3` module handles a
 1. **Clone the repository**
 
     ```bash
-    git clone https://github.com/Sierra-Arn/sqlite-core.git
+    git clone git@github.com:Sierra-Arn/sqlite-core.git
     cd sqlite-core
     ```
 
