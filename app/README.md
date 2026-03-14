@@ -56,6 +56,14 @@ These directories provide **symmetrical implementations** of the same data acces
    - The output is always a well-defined, serializable data structure,
    - Transactional integrity is guaranteed across complex workflows.
 
+4. **REST-inspired interface conventions**  
+   Although this project contains no HTTP layer, method signatures across repositories and services follow REST conventions to maintain a consistent and predictable interface:
+   - Create and update operations accept **full Pydantic schemas** (analogous to **request body**).
+   - Read and delete operations accept **plain scalar identifiers** like `id: int` (analogous to **path parameters**), without wrapping them in a schema.
+   - Filtering and pagination in get_all operations are passed as **plain scalar parameters** (analogous to **query parameters**), without wrapping them in a schema.
+   
+   This is also reflected in the schema design: Pydantic models are defined **only for create and update operations**, as read, delete, and filtering require no structured input.
+
 ## **III. `migrations/`**
 
 Alembic directory that manages database schema changes and table modifications. Contains migration files, configuration, and version control for database structure evolution.
