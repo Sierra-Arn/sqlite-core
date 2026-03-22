@@ -92,7 +92,6 @@ class BaseService(
         ValueError
             If custom business validation fails.
         """
-
         async with get_async_db_session() as db:
             repository = self.repository_class(db)
             await self._validate_create(obj_data, repository)
@@ -115,7 +114,6 @@ class BaseService(
         ReadSchemaType or None
             The entity serialized as a Pydantic schema if found; `None` otherwise.
         """
-
         async with get_async_db_session() as db:
             repository = self.repository_class(db)
             obj = await repository.get(obj_id)
@@ -137,7 +135,6 @@ class BaseService(
         list[ReadSchemaType]
             A list of entities, up to `limit` in size, each serialized as a Pydantic schema.
         """
-        
         async with get_async_db_session() as db:
             repository = self.repository_class(db)
             objs = await repository.get_all(skip=skip, limit=limit)
@@ -168,7 +165,6 @@ class BaseService(
         ValueError
             If custom validation fails.
         """
-        
         async with get_async_db_session() as db:
             repository = self.repository_class(db)
             existing_obj = await repository.get(obj_id)
@@ -203,7 +199,6 @@ class BaseService(
         ValueError
             If custom validation fails.
         """
-        
         async with get_async_db_session() as db:
             repository = self.repository_class(db)
             existing_obj = await repository.get(obj_id)

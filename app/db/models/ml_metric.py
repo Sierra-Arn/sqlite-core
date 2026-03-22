@@ -40,14 +40,10 @@ class MLMetric(Base):
 
     Notes
     -----
-    - A composite unique constraint (`uix_model_metric`) ensures that a given metric name
+    A composite unique constraint (`uix_model_metric`) ensures that a given metric name
     (e.g., `accuracy`) can appear at most once per model, preventing accidental duplication
     while allowing the same metric name across different models.
-
-    - The relationship to MLModel is lazy-loaded by default (per SQLAlchemy conventions).
-    When querying metrics in bulk, explicitly join the ml_model relationship.
     """
-
     __tablename__ = 'ml_metrics'
     __table_args__ = (UniqueConstraint('ml_model_id', 'name', name = 'uix_model_metric'),)
     

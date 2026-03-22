@@ -44,7 +44,6 @@ class Base(DeclarativeBase):
     - This base class assumes a single-tenant, single-schema deployment model typical
       in containerized microservices.
     """
-
     id: Mapped[int] = mapped_column(
         Integer, 
         primary_key=True,

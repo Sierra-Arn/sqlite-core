@@ -27,7 +27,6 @@ class DeviceType(StrEnum):
     - The string values are fixed and must not be changed without a corresponding
     database migration, as they are persisted in persistent storage.
     """
-
     CPU = "cpu"
     CUDA = "cuda"
 

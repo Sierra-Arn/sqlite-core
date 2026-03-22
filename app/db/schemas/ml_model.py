@@ -1,28 +1,39 @@
 # app/db/schemas/ml_model.py
-from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field
+from .base import IDMixin, TimestampMixin
+from .ml_metric import MLMetricResponse
 from ..models import DeviceType
 
 
-class MLModelRequestCreate(BaseModel):
-    """Request schema for registering a new machine learning model via the REST API."""
+class NameMixin:
+    """
+    Mixin providing a human-readable unique name field.
+    """
 
     name: str = Field(
         ...,
-        min_length = 1,
-        max_length = 32,
-        description = (
-            "Unique identifier for the ML model. Must be 1-32 characters long."
-        )
+        min_length=1,
+        max_length=32,
+        description="Unique identifier for the ML model. Must be 1-32 characters long."
     )
+
+
+class DeviceMixin:
+    """
+    Mixin providing a target inference device field.
+    """
 
     device: DeviceType = Field(
         ...,
-        description = (
+        description=(
             "Target inference device where the model is expected to run. "
-            "Valid values are `CPU` or `CUDA`. "
+            "Valid values are `CPU` or `CUDA`."
         )
     )
+
+
+class MLModelRequestCreate(NameMixin, DeviceMixin, BaseModel):
+    """Request schema for registering a new machine learning model via the REST API."""
 
     model_config = ConfigDict(
         extra = "forbid",
@@ -41,7 +52,7 @@ class MLModelRequestCreate(BaseModel):
     )
 
 
-class MLModelRequestUpdate(BaseModel):
+class MLModelRequestUpdate(DeviceMixin, BaseModel):
     """
     Request schema for updating mutable metadata of an existing ML model via the REST API.
 
@@ -58,13 +69,6 @@ class MLModelRequestUpdate(BaseModel):
     in accordance with RESTful design principles. The request body contains only the fields to be modified.
     """
 
-    device: DeviceType = Field(
-        ...,
-        description=(
-            "New target inference device (`CPU` or `CUDA`)."
-        )
-    )
-
     model_config = ConfigDict(
         extra="forbid",
         json_schema_extra={
@@ -80,7 +84,7 @@ class MLModelRequestUpdate(BaseModel):
     )
 
 
-class MLModelResponse(BaseModel):
+class MLModelResponse(IDMixin, TimestampMixin, NameMixin, DeviceMixin, BaseModel):
     """
     Response schema representing a fully hydrated machine learning model entity.
 
@@ -88,32 +92,7 @@ class MLModelResponse(BaseModel):
     It includes both user-provided fields and system-managed metadata.
     """
 
-    id: int = Field(
-        ...,
-        description="Unique surrogate identifier assigned by the database."
-    )
-
-    name: str = Field(
-        ...,
-        min_length=1,
-        max_length=32,
-        description="Unique business identifier for the ML model."
-    )
-
-    device: DeviceType = Field(
-        ...,
-        description="Target inference device where the model is expected to run (`CPU` or `CUDA`)."
-    )
-
-    created_at: datetime = Field(
-        ...,
-        description="Timestamp when the model record was first created in the database."
-    )
-
-    updated_at: datetime = Field(
-        ...,
-        description="Timestamp when the model record was last modified."
-    )
+    ml_metrics: list[MLMetricResponse] = []
 
     model_config = ConfigDict(
         # Key setting for working with ORM objects
@@ -122,11 +101,43 @@ class MLModelResponse(BaseModel):
         json_schema_extra={
             "examples": [
                 {
-                    "id": 1,
-                    "name": "sapiens_pose",
-                    "device": "CUDA",
-                    "created_at": "2026-01-23T10:00:00Z",
-                    "updated_at": "2026-01-23T10:00:00Z"
+                    "summary": "Without metrics",
+                    "value": {
+                        "id": 1,
+                        "name": "sapiens_pose",
+                        "device": "CUDA",
+                        "created_at": "2026-01-23T10:00:00Z",
+                        "updated_at": "2026-01-23T10:00:00Z",
+                        "ml_metrics": []
+                    }
+                },
+                {
+                    "summary": "With metrics",
+                    "value": {
+                        "id": 1,
+                        "name": "sapiens_pose",
+                        "device": "CUDA",
+                        "created_at": "2026-01-23T10:00:00Z",
+                        "updated_at": "2026-01-23T10:00:00Z",
+                        "ml_metrics": [
+                            {
+                                "id": 1,
+                                "name": "accuracy",
+                                "value": 0.95,
+                                "ml_model_id": 1,
+                                "created_at": "2026-01-23T10:00:00Z",
+                                "updated_at": "2026-01-23T10:00:00Z"
+                            },
+                            {
+                                "id": 2,
+                                "name": "f1_score",
+                                "value": 0.876,
+                                "ml_model_id": 1,
+                                "created_at": "2026-01-23T11:30:00Z",
+                                "updated_at": "2026-01-23T11:30:00Z"
+                            }
+                        ]
+                    }
                 }
             ]
         }

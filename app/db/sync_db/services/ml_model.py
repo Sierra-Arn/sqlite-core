@@ -62,7 +62,6 @@ class MLModelService(
         ValueError
             If a model with the same `name` already exists in the database.
         """
-        
         existing_model = repository.get_by_name(obj_data.name)
         if existing_model is not None:
             raise ValueError(f"ML model with name '{obj_data.name}' already exists")

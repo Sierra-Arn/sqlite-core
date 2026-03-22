@@ -27,7 +27,6 @@ class MLMetricRepository(BaseRepository[MLMetric]):
         db : AsyncSession
             Active SQLAlchemy asynchronous session providing transactional context.
         """
-
         super().__init__(db=db, model=MLMetric)
 
     async def get_by_model_id_and_name(self, model_id: int, metric_name: str) -> MLMetric | None:
@@ -46,7 +45,6 @@ class MLMetricRepository(BaseRepository[MLMetric]):
         MLMetric or None
             The metric instance if found; `None` if no such metric exists for the given model.
         """
-        
         stmt = select(MLMetric).where(
             MLMetric.ml_model_id == model_id,
             MLMetric.name == metric_name

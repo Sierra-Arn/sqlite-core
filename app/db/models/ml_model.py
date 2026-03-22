@@ -33,13 +33,7 @@ class MLModel(Base):
         Configured with `cascade="all, delete-orphan"` to ensure that when an `MLModel`
         is deleted, all its dependent metrics are automatically removed from the database,
         preserving referential integrity.
-
-    Notes
-    -----
-    The relationship to `MLMetric` is loaded lazily by default (per SQLAlchemy conventions).
-    When querying metrics in bulk, explicitly join the ml_model relationship.
     """
-
     __tablename__ = 'ml_models'
         
     name: Mapped[str] = mapped_column(

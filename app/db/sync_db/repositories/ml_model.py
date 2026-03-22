@@ -1,6 +1,6 @@
 # app/db/sync_db/repositories/ml_model.py
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from .base import BaseRepository
 from ...models import MLModel
 
@@ -28,7 +28,6 @@ class MLModelRepository(BaseRepository[MLModel]):
             Active SQLAlchemy session providing transactional context.
             Typically injected via a dependency (e.g., FastAPI) or context manager.
         """
-        
         super().__init__(db = db, model = MLModel)
 
     def get_by_name(self, name: str) -> MLModel | None:
@@ -51,6 +50,5 @@ class MLModelRepository(BaseRepository[MLModel]):
         Unlike `get(id)`, this method is not used for updates or deletions via primary key,
         but is essential for registration validation (e.g., ensuring no duplicate names on create).
         """
-        
         stmt = select(MLModel).where(MLModel.name == name)
         return self.db.execute(stmt).scalar_one_or_none()

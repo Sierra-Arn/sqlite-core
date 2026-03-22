@@ -28,7 +28,6 @@ class MLMetricRepository(BaseRepository[MLMetric]):
             Active SQLAlchemy session providing transactional context.
             Typically injected via a dependency (e.g., FastAPI) or context manager.
         """
-
         super().__init__(db = db, model = MLMetric)
 
     def get_by_model_id_and_name(self, model_id: int, metric_name: str) -> MLMetric | None:
@@ -52,7 +51,6 @@ class MLMetricRepository(BaseRepository[MLMetric]):
         Unlike `get(id)`, this method is not used for updates or deletions via primary key,
         but is essential for metric registration validation (e.g., ensuring no duplicate identificators on create).
         """
-        
         stmt = select(MLMetric).where(
             MLMetric.ml_model_id == model_id,
             MLMetric.name == metric_name

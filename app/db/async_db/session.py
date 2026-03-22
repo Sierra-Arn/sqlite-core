@@ -1,6 +1,7 @@
 # app/db/async_db/session.py
 from typing import AsyncGenerator
 from contextlib import asynccontextmanager
+from sqlalchemy import event
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from ..config import sqlite_config
 
@@ -19,6 +20,17 @@ Asynchronous SQLAlchemy database engine configured via application settings.
 This engine provides the foundational connection interface for all asynchronous
 ORM operations against the SQLite database.
 """
+
+@event.listens_for(engine.sync_engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    # SQLite does not enforce foreign key constraints by default — ON DELETE CASCADE
+    # and other referential actions are silently ignored without explicit activation.
+    # PRAGMA is a SQLite-specific configuration mechanism that controls internal engine 
+    # behavior at runtime. Here we use it to forcibly enable foreign key enforcement 
+    # for every new connection.
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
 
 AsyncSessionLocal = async_sessionmaker(
     autocommit=sqlite_config.autocommit,

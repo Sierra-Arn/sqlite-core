@@ -48,6 +48,7 @@ This type variable enables a type-safe generic repository pattern:
 serialization, and schema generation features.
 """
 
+
 ReadSchemaType = TypeVar("ReadSchemaType", bound=BaseModel)
 """
 Generic type variable representing any Pydantic model used for reading or returning entity data.

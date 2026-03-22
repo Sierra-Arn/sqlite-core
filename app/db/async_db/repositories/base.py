@@ -41,7 +41,6 @@ class BaseRepository(Generic[ModelType]):
         model : Type[ModelType]
             The SQLAlchemy ORM model class this repository operates on.
         """
-
         self.db = db
         self.model = model
 
@@ -59,7 +58,6 @@ class BaseRepository(Generic[ModelType]):
         ModelType
             The newly created model instance, including auto-generated fields.
         """
-
         db_obj = self.model(**obj_data)
         self.db.add(db_obj)
 
@@ -88,6 +86,13 @@ class BaseRepository(Generic[ModelType]):
         """
         Retrieve an entity by its primary key.
 
+        Uses lazy loading — only the entity itself is fetched; relationships
+        are not loaded until accessed. Safe in an async context as long as
+        the session remains open, no relationship attributes are accessed
+        after session closure, and no synchronous code (e.g., Pydantic's
+        ``model_validate``) attempts to trigger a lazy load through an async
+        connection via the greenlet mechanism.
+
         Parameters
         ----------
         obj_id : int
@@ -98,14 +103,21 @@ class BaseRepository(Generic[ModelType]):
         ModelType or None
             The entity if found; `None` if no record exists with the given ID.
         """
-        
         stmt = select(self.model).where(self.model.id == obj_id)
         result = await self.db.execute(stmt)
         return result.scalar_one_or_none()
 
+
     async def get_all(self, skip: int = 0, limit: int = 100) -> list[ModelType]:
         """
         Retrieve a paginated list of all entities of this type.
+
+        Uses lazy loading — only the entities themselves are fetched; relationships
+        are not loaded until accessed. Safe in an async context as long as
+        the session remains open, no relationship attributes are accessed
+        after session closure, and no synchronous code (e.g., Pydantic's
+        ``model_validate``) attempts to trigger a lazy load through an async
+        connection via the greenlet mechanism.
 
         Parameters
         ----------
@@ -119,7 +131,6 @@ class BaseRepository(Generic[ModelType]):
         list[ModelType]
             A list of up to `limit` entities, starting after `skip` records.
         """
-        
         stmt = select(self.model).offset(skip).limit(limit)
         result = await self.db.execute(stmt)
         return list(result.scalars().all())
@@ -141,7 +152,6 @@ class BaseRepository(Generic[ModelType]):
         ModelType or None
             The updated entity if it exists; `None` if no entity matches `obj_id`.
         """
-        
         db_obj = await self.get(obj_id)
         if db_obj is None:
             return None
@@ -167,7 +177,6 @@ class BaseRepository(Generic[ModelType]):
         bool
             `True` if the entity was found and deleted; `False` if no such entity exists.
         """
-        
         db_obj = await self.get(obj_id)
         if db_obj is None:
             return False
